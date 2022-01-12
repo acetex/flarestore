@@ -47,7 +47,6 @@ The model it mean table in `RDB` for example we try to create 'users' table in `
 var FlareStore = require('@acetex/flarestore')
 
 class User extends FlareStore {
-
     table = 'users'; // difine the name of table
     fields = ['name', 'address']; // fillable field list
 
@@ -87,7 +86,7 @@ async function getUser(){
     user.where('name', '==', 'firstname lastname');
     user.orWhere('address', 'customer address');
     user.orderBy('__timestamp', 'desc');
-    
+
     let users = await user.get();
 
 }

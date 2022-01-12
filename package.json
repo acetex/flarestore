@@ -1,0 +1,17 @@
+{
+  "name": "@acetex/flarestore",
+  "version": "0.0.14",
+  "description": "Firestore ORM for node.js, inspired by laravel eloquent.",
+  "main": "./src/FlareStore.js",
+  "keywords": [
+    "firestore",
+    "orm",
+    "nodejs"
+  ],
+  "author": "gantaphon.m",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/firestore": "^4.15.1",
+    "dotenv": "^11.0.0"
+  }
+}

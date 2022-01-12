@@ -1,6 +1,7 @@
 # Welcom to Flarestore the ORM Firestore for node.js
 >** Important this package just `starter development phase` becareful if you plan to use on production **
 
+ [Visit Github Project](https://github.com/acetex/flarestore).
 and sorry about my english.
 
 # Requirement and Limitation
@@ -13,7 +14,6 @@ and sorry about my english.
 7. Currently version not support `limit()`, `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
 9. Currently version not support `delete()` the data record.
-10. github project incoming.
 
 ## Installation
 ### Before you begin

@@ -14,8 +14,7 @@ and sorry about my english.
 6. Support `==`, `>`, `<`, `>=`, `<=`, `!=`, `array-contains`, `array-contains-any`, `in`, `not-in` on `where()` operator same of gcp firestore.
 7. Currently version not support `limit()`, `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
-9. Currently version not support `delete()` the data record.
-10. Can use in MVC structure project as well, you can build 'M'(Model) with this flarestore package.
+9. Can use in MVC structure project as well, you can build 'M'(Model) with this flarestore package.
 
 ## Installation
 ### Before you begin
@@ -206,5 +205,5 @@ async function getUser(){
 getUser();
 
 ```
-> Note! `hasOne()` use the same mechanic as `hasMany()` but have some difference, `hasOne()` return single object and `hasMany()` return array of object
+> Note! `hasOne()` use the same mechanic as `hasMany()` but have some difference `return type` with `get()` method, `hasOne()` return single object and `hasMany()` return array of object
 

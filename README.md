@@ -103,7 +103,7 @@ Delete Record
 # /index.js
 var User = require('./models/User.js');
 
-async function getUser(){
+async function deleteUser(){
     const user = new User;
 
     let users = await user.get();
@@ -111,7 +111,7 @@ async function getUser(){
 
 }
 
-getUser();
+deleteUser();
 
 ```
 

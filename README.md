@@ -1,5 +1,5 @@
 # Welcom to Flarestore the ORM Firestore for node.js
->** Important this package just `starter development phase` becareful if you plan to use on production **
+>** Important this package just `Very begining of development phase` it have alot of limitation to use, becareful if you plan to use on production **
 
 [Visit Github Project](https://github.com/acetex/flarestore).
 
@@ -15,6 +15,7 @@ and sorry about my english.
 7. Currently version not support `limit()`, `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
 9. Currently version not support `delete()` the data record.
+10. Can use in MVC structure project as well, you can build 'M'(Model) with this flarestore package.
 
 ## Installation
 ### Before you begin
@@ -48,12 +49,12 @@ The model it mean table in `RDB` for example we try to create 'users' table in `
 var FlareStore = require('@acetex/flarestore')
 
 class User extends FlareStore {
-    table = 'users'; // difine the name of table
+    table = 'users'; // define the name of table
     fields = ['name', 'address']; // fillable field list
 
 }
 
-module.exports = User // export User model Module
+module.exports = User // export User model
 
 ```
 
@@ -69,7 +70,7 @@ async function createUser(){
         address: 'customer address'
     };
 
-    await user.create(params);
+    await user.create(params); // when you create a new data record, the '__id' and '__timestamp' is automatic generated.
 }
 
 createUser();
@@ -97,10 +98,96 @@ getUser();
 ```
 
 Relational Data
+
+First: modify `User` model by adding `post()` with logic `User->hasMany->Post` and create new `Post` model with logic `Post->belongTo->User`
 ```
-    #nearly release feature in the next version.
+# /models/User.js
+var FlareStore = require('@acetex/flarestore')
+
+class User extends FlareStore {
+    table = 'users'; // define the name of table
+    fields = ['name', 'address']; // fillable field list
+
+    post(){
+        return this.hasMany('models/Post', 'users_id', '__id');
+        // you can type just 'this.hasMany('models/Post')' if your foreignKey is {table name}_id
+    }
+}
+
+module.exports = User // export User model
 
 ```
+
+```
+# /models/Post.js
+var FlareStore = require('@acetex/flarestore')
+
+class Post extends FlareStore {
+    table = 'posts'; // define the name of table
+    fields = ['title', 'description', 'uses_id'];
+
+    user(){
+        this.belongTo('models/User');
+    }
+}
+
+module.exports = Post // export Post model
+
+```
+
+Secord: create new 'Post' record with 'users_id' foreignKey
+```
+# /index.js
+var Post = require('./models/Post.js');
+
+async function createPost(){
+    const user = new User;
+    let userData = await user.first();  // 'first()' return only first one record with 'object' not 'array of object'
+
+    const post = new Post;
+    const params = {
+        title: 'test title',
+        description: 'test description',
+        users_id: userData.__id
+    };
+
+    await post.create(params); // when you create a new data record, the '__timestamp' field is automatic generated.
+}
+
+createPost();
+```
+
+Third: try to retrieving relation model;
+```
+# /index.js
+var User = require('./models/User.js');
+
+async function getUser(){
+    //example with hasMany
+    const user = new User;
+
+    let userData = await user.first();
+
+    let posts = await userData.post().get();
+    console.log(posts);
+
+    // '.post()' is relation method to 'Post' model it will return 'Post' model object, of course you can use all property/method of 'Post' model like where(), orWhere(), orderBy(), etc. just like example below.
+    let posts = await userData.post().where('description', 'test description').get();
+    console.log(posts);
+
+
+    //example with belongTo
+    const postBelongTo = new Post;
+    let postBelongToData = await postBelongTo.first();
+    let belongToUser = postBelongToData.user().first();
+    console.log(belongToUser);
+}
+
+
+getUser();
+
+```
+> Note! hasOne() use the same mechanic as hasMany() but have some difference is hasOne() return single object and hasMany return array of object
 
 
 

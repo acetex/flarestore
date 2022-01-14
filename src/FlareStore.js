@@ -16,17 +16,19 @@ class FlareStore {
             paramsCreate[field] =  params[field];
         });
         
+        let newDocRef = fireStore.activeTable.doc();
         let tiemStamp = new Date().getTime();
         paramsCreate['__timestamp'] = tiemStamp;
-        await fireStore.activeTable.add(paramsCreate);
+        paramsCreate['__id'] = newDocRef.id;
+        await newDocRef.set(paramsCreate);
     }
 
-    async get(){
+    async #getData(type = 'get'){
         const fireStore = new BaseFireStore(this.table);
         let docs = [];
         let pickoff = [];
         let unionSet = 0;
-        
+
         if(this.#where.length > 0){
             unionSet++;
             let whereCollection = fireStore.activeTable;
@@ -73,26 +75,42 @@ class FlareStore {
             docs = await Collection.get();
         }
         
+        
         let record;
         const orm = [];
         const modelObject = this;
         docs.forEach(doc => {
             record = doc.data();
-            record['__id'] = doc.id;
 
             let rorm = new ROrm;
             orm.push(rorm.getOrm(modelObject, fireStore.activeTable, record));
         });
 
         if(this.#orderBy.length == 0 && unionSet > 1){
-            console.log('default order');
             orm.sort(this.#dynamicSortMultiple(['__timestamp']));
         }else{
             orm.sort(this.#dynamicSortMultiple(this.#orderBy));
         }
-        
 
         return orm;
+    }
+
+    async get(){
+        let data;
+        if(this.$fsCurrentRelationType == 'hasOne' || this.$fsCurrentRelationType == 'belongTo'){
+            data = await this.#getData('first');
+            data = data[0];
+        }else{
+            data = await this.#getData();
+        }
+            
+        return data;
+    }
+
+    async first(){
+        let data = await this.#getData('first');
+
+        return data[0];
     }
 
     where(...aggs){

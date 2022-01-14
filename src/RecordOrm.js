@@ -4,21 +4,78 @@ class RecordOrm {
     #modelObject;
     #activeTable;
     #original;
+    
+    #setRelation(relationType, relationModel, foreignKey = null, localKey){
+        if(this[localKey] === undefined){
+            throw (`No property key '${localKey}' in '${this.#modelObject.table}' model.`);
+        }
 
-    hasMany(relationModel){
+        if(foreignKey === null){
+            foreignKey = this.#modelObject.table+'_id';
+        }
+
+        let relationData = this.#getModelClass(relationModel);
+
+        if(!relationData.fields.includes(foreignKey)){
+            throw (`No property key '${foreignKey}' in '${relationData.table}' model.`);
+        }
+    
+        relationData.$fsCurrentRelationType = relationType;
+        relationData.where(foreignKey, this[localKey]);
+
+        return relationData;
+    }
+
+    #setInvertRelation(relationType, relationModel, ownerKey = null, relateKey = null){    
+        let relationData = this.#getModelClass(relationModel);
+        if(ownerKey === null){
+            ownerKey = relationData.table+'_id';
+        }
+        
+        if(this[ownerKey] === undefined){
+            throw (`No property key '${ownerKey}' in '${this.#modelObject.table}' model.`);
+        }
+
+        if(!relationData.fields.includes(relateKey) && relateKey != '__id'){
+            throw (`No property key '${relateKey}' in '${relationData.table}' model.`);
+        }
+        
+        relationData.$fsCurrentRelationType = relationType;
+        relationData.where(relateKey, this[ownerKey]);
+
+        return relationData;
+    }
+
+    #getModelClass(relationModel){
+        if(relationModel.indexOf("/") == 0){
+            relationModel = relationModel.substring(1);
+        }
+
         const { dirname } = require('path');
         const appDir = dirname(require.main.filename);
 
         let Model =  require(`${appDir}/${relationModel}`);
-        this.data = new Model;
+        let relationData = new Model;
 
-        return this;
+        return relationData;
     }
 
-    async get(){
-        let data = await this.data.get();
-        
-        return data;
+    belongTo(relationModel, ownerKey = null, relateKey = '__id'){
+        let relationData = this.#setInvertRelation('belongTo', relationModel, ownerKey, relateKey);
+
+        return relationData;
+    }
+
+    hasOne(relationModel, foreignKey = null, localKey = '__id'){
+        let relationData = this.#setRelation('hasOne', relationModel, foreignKey, localKey);
+
+        return relationData;
+    }
+
+    hasMany(relationModel, foreignKey = null, localKey = '__id'){
+        let relationData = this.#setRelation('hasMany', relationModel, foreignKey, localKey);
+
+        return relationData;
     }
 
     getOrm(modelObject, activeTable, records){
@@ -35,7 +92,7 @@ class RecordOrm {
             let value = records[field];
             this[field] = value;
         }
-
+        
         return this;
     }
 

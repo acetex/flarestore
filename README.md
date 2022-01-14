@@ -161,6 +161,7 @@ Third: try to retrieving relation model;
 ```
 # /index.js
 var User = require('./models/User.js');
+var Post = require('./models/Post.js');
 
 async function getUser(){
     //example with hasMany
@@ -187,7 +188,7 @@ async function getUser(){
 getUser();
 
 ```
-> Note! hasOne() use the same mechanic as hasMany() but have some difference is hasOne() return single object and hasMany return array of object
+> Note! `hasOne()` use the same mechanic as `hasMany()` but have some difference, `hasOne()` return single object and `hasMany()` return array of object
 
 
 

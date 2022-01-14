@@ -77,7 +77,7 @@ createUser();
 
 ```
 
-Get the user and where query
+Get the user and where query then update current user
 ```
 # /index.js
 var User = require('./models/User.js');
@@ -90,6 +90,24 @@ async function getUser(){
     user.orderBy('__timestamp', 'desc');
 
     let users = await user.get();
+    users[0].name = 'firstname lastname changed!';
+    users[0].save();
+}
+
+getUser();
+
+```
+
+Delete Record
+```
+# /index.js
+var User = require('./models/User.js');
+
+async function getUser(){
+    const user = new User;
+
+    let users = await user.get();
+    users[2].delete(); // delete user record by index position 3
 
 }
 
@@ -189,10 +207,4 @@ getUser();
 
 ```
 > Note! `hasOne()` use the same mechanic as `hasMany()` but have some difference, `hasOne()` return single object and `hasMany()` return array of object
-
-
-
-
-
-
 

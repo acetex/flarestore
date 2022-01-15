@@ -1,6 +1,8 @@
 # Welcom to Flarestore the ORM Firestore for node.js
 >** Important this package just `Very begining of development phase` it have alot of limitation to use, becareful if you plan to use on production **
 
+The Node.Js Firestore ORM inspire by laravel eloquent, extremely easy and simple to use, super lightweight package.
+
 [Visit Github Project](https://github.com/acetex/flarestore).
 
 and sorry about my english.
@@ -10,11 +12,11 @@ and sorry about my english.
 2. This package not support firestore sub collection at all. the concept of this library your must imagine to `RDB (Relational Data Base` it just `DB->TABLE->COLUMN` schema and `Relational` data with `foreign key`, yes no need sub collection for `RDB`.
 3. This Package not require a `composite or single field index`  when your use `orderBY()` to sort your query, because the library use your nodejs server to do this.
 4. Currently version not support difining `field type`, you can workaround to edit field type manualy on gcp firestore page.
-5. Currently version of package also not support `LIKE %%` query same base firestore query api, but in the nearly next version of this package i try to support `full text search` with `term`, `bigram` and `trigram`, you just config field type with `term`, `bigram` or `trigram` type to use this feature.
+5. Currently version also not support `LIKE %%` query same base firestore query api, but in the nearly next version of this package i try to support `full text search` with `term`, `bigram` and `trigram`, you just config field type with `term`, `bigram` or `trigram` type to use this feature.
 6. Support `==`, `>`, `<`, `>=`, `<=`, `!=`, `array-contains`, `array-contains-any`, `in`, `not-in` on `where()` operator same of gcp firestore.
 7. Currently version not support `limit()`, `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
-9. Can use in MVC structure project as well, you can build 'M'(Model) with this flarestore package.
+9. Can use in MVC structure project as well, you can build `Model` with this flarestore package.
 
 ## Installation
 ### Before you begin

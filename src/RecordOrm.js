@@ -118,6 +118,14 @@ class RecordOrm {
             return err;
         }
     }
+
+    async delete() {
+        try{
+            const deleted = await this.#activeTable.doc(this.__id).delete();
+        }catch(err){
+            return err;
+        }
+    }
 }
 
 module.exports = RecordOrm

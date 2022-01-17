@@ -21,12 +21,13 @@ and sorry about my english.
 
 ## Installation
 ### Before you begin
-[Select or create a Google Cloud Platform project](https://console.cloud.google.com/project).
+To authenticate a service account and authorize it to access Firebase services, you must generate a private key file in JSON format.
+__To generate a private key file for your service account:__
+1. In the Firebase console, open Settings > [Service Accounts](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk).
 
-[Enable the Cloud Firestore API](https://console.cloud.google.com/flows/enableapi?apiid=firestore.googleapis.com).
+2. Click __Generate New Private Key__, then confirm by clicking __Generate Key__.
 
-[Set up authentication with a service account](https://cloud.google.com/docs/authentication/getting-started) so you can access the API from your local workstation.
-
+3. The JSON key file will download to your computer, This key must use for .env file to nearly next step.
 
 ### Install via npm
 ```

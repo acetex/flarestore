@@ -39,7 +39,7 @@ npm i @acetex/flarestore
 Create the .env file to root of your node.js project.
 ```
 #.env 
-FS_PROJECT_ID=[Your firestore project ID]
+
 FS_KEY_FILENAME=[A path/to/file.json service account JSON key file on your computer]
 FS_DB_NAME=[The name of firestore root collection for your database name]
 ```

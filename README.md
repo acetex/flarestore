@@ -22,6 +22,7 @@ and sorry about my english.
 ## Installation
 ### Before you begin
 To authenticate a service account and authorize it to access Firebase services, you must generate a private key file in JSON format.
+
 __To generate a private key file for your service account:__
 1. In the Firebase console, open Settings > [Service Accounts](https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk).
 
@@ -35,7 +36,7 @@ npm i @acetex/flarestore
 ```
 
 ### Configulation
-Create the .env file to root off your node.js project.
+Create the .env file to root of your node.js project.
 ```
 #.env 
 FS_PROJECT_ID=[Your firestore project ID]

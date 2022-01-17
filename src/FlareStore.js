@@ -176,6 +176,12 @@ class FlareStore {
         return this;
     }
 
+    limit(limit){
+        this.#limit = limit;
+
+        return this;
+    }
+
     #dynamicSort(property) {
         var sortOrder = 1;
         if(property.substr(0, this.#descFlag.length) === this.#descFlag) {

@@ -2,10 +2,10 @@ const ROrm = require('./RecordOrm.js');
 const BaseFireStore = require('./BaseFireStore.js');
 
 class FlareStore {
-    #query = null;
     #where = [];
     #orWhere = [];
     #orderBy = [];
+    #limit = null;
     #descFlag = '[-]';
 
     async create(params){
@@ -20,7 +20,22 @@ class FlareStore {
         let tiemStamp = new Date().getTime();
         paramsCreate['__timestamp'] = tiemStamp;
         paramsCreate['__id'] = newDocRef.id;
-        await newDocRef.set(paramsCreate);
+
+        try{
+            let modelObject = this;
+            let creteData = await newDocRef.set(paramsCreate);
+            
+            if(creteData){
+                let rorm = new ROrm;
+                let obj = rorm.getOrm(modelObject, fireStore.activeTable, paramsCreate);
+
+                return obj;
+            }else{
+                return false;
+            }
+        }catch(err){
+            return false;
+        }
     }
 
     async #getData(type = 'get'){
@@ -36,6 +51,9 @@ class FlareStore {
                 let [field, condition, value] = where;
                 whereCollection = whereCollection.where(field, condition, value);
             });
+            if(this.#limit != null){
+                whereCollection.limit(this.#limit);
+            }
             let where = await whereCollection.get();
             
             where.forEach(doc => {
@@ -56,6 +74,10 @@ class FlareStore {
             });
             
             await Promise.all(orWhere.map(obj => {
+                if(this.#limit != null){
+                    obj.limit(this.#limit);
+                }
+
                 return obj.get();
             }))
             .then((snapshots) => {
@@ -72,9 +94,12 @@ class FlareStore {
 
         if(this.#where.length == 0 && this.#orWhere.length == 0){
             let Collection = fireStore.activeTable;
+            if(this.#limit != null){
+                Collection.limit(this.#limit);
+            }
+
             docs = await Collection.get();
         }
-        
         
         let record;
         const orm = [];
@@ -181,6 +206,13 @@ class FlareStore {
             }
             return result;
         }
+    }
+
+    resetOperation(){
+        this.#where = [], this.#orWhere, this.#orderBy = [];
+        this.#limit = null;
+
+        return this;
     }
 
 }

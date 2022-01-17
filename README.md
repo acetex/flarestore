@@ -14,9 +14,10 @@ and sorry about my english.
 4. Currently version not support difining `field type`, you can workaround to edit field type manualy on gcp firestore page.
 5. Currently version also not support `LIKE %%` query same base firestore query api, but in the nearly next version of this package i try to support `full text search` with `term`, `bigram` and `trigram`, you just config field type with `term`, `bigram` or `trigram` type to use this feature.
 6. Support `==`, `>`, `<`, `>=`, `<=`, `!=`, `array-contains`, `array-contains-any`, `in`, `not-in` on `where()` operator same of gcp firestore.
-7. Currently version not support `limit()`, `startAt()`, `endAt()`.
+7. Currently version suport only `limit()` not support `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
-9. Can use in MVC structure project as well, you can build `Model` with this flarestore package.
+9. Support `MVC` structure project as well, you can build `Model` with this flarestore package.
+
 
 ## Installation
 ### Before you begin

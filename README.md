@@ -108,7 +108,7 @@ var User = require('./models/User.js');
 async function deleteUser(){
     const user = new User;
 
-    let users = await user.get();
+    let users = await user.limit(3).get(); // limit only 3 record
     users[2].delete(); // delete user record by index position 3
 
 }

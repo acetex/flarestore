@@ -1,4 +1,6 @@
-const Firestore = require('@google-cloud/firestore');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
+
 require('dotenv').config();
 
 class BaseFireStore {
@@ -8,10 +10,12 @@ class BaseFireStore {
     activeTable = null;
 
     constructor(table) {
-        this.conn = new Firestore({
-            projectId: process.env.FS_PROJECT_ID,
-            keyFilename: process.env.FS_KEY_FILENAME,
+        const serviceAccount = require(process.env.FS_KEY_FILENAME);
+        initializeApp({
+            credential: cert(serviceAccount)
         });
+
+        this.conn = getFirestore();
 
         this.projectId = process.env.FS_PROJECT_ID;
         this.db = this.conn.collection(process.env.FS_DB_NAME).doc('schema');

@@ -119,7 +119,7 @@ deleteUser();
 
 Relational Data
 
-First: modify `User` model by adding `post()` with logic `User->hasMany->Post` and create new `Post` model with logic `Post->belongTo->User`
+First: modify `User` model by adding `post()` with `User->hasMany->Post` and create new `Post` model with `Post->belongTo->User`
 ```
 # /models/User.js
 var FlareStore = require('@acetex/flarestore')

@@ -18,7 +18,7 @@
   "author": "gantaphon.m",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/firestore": "^4.15.1",
-    "dotenv": "^11.0.0"
+    "dotenv": "^11.0.0",
+    "firebase-admin": "^10.0.1"
   }
 }

@@ -104,12 +104,15 @@ class FlareStore {
         let record;
         const orm = [];
         const modelObject = this;
-        docs.forEach(doc => {
+        for (let doc of docs) {
             record = doc.data();
 
             let rorm = new ROrm;
             orm.push(rorm.getOrm(modelObject, fireStore.activeTable, record));
-        });
+            if(orm.length == this.#limit){
+                break;
+            }
+        };
 
         if(this.#orderBy.length == 0 && unionSet > 1){
             orm.sort(this.#dynamicSortMultiple(['__timestamp']));

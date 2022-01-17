@@ -52,7 +52,7 @@ class FlareStore {
                 whereCollection = whereCollection.where(field, condition, value);
             });
             if(this.#limit != null){
-                whereCollection.limit(this.#limit);
+                whereCollection = whereCollection.limit(this.#limit);
             }
             let where = await whereCollection.get();
             
@@ -75,7 +75,7 @@ class FlareStore {
             
             await Promise.all(orWhere.map(obj => {
                 if(this.#limit != null){
-                    obj.limit(this.#limit);
+                    obj = obj.limit(this.#limit);
                 }
 
                 return obj.get();
@@ -95,7 +95,7 @@ class FlareStore {
         if(this.#where.length == 0 && this.#orWhere.length == 0){
             let Collection = fireStore.activeTable;
             if(this.#limit != null){
-                Collection.limit(this.#limit);
+                Collection = Collection.limit(this.#limit);
             }
 
             docs = await Collection.get();

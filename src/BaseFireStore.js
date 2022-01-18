@@ -1,4 +1,4 @@
-const { initializeApp, cert } = require('firebase-admin/app');
+const admin = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 
 require('dotenv').config();
@@ -10,9 +10,11 @@ class BaseFireStore {
 
     constructor(table) {
         const serviceAccount = require(process.env.FS_KEY_FILENAME);
-        initializeApp({
-            credential: cert(serviceAccount)
-        });
+        if(!admin.apps.length){
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount)
+            });
+        }
 
         this.conn = getFirestore();
 

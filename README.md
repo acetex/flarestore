@@ -54,7 +54,12 @@ var FlareStore = require('@acetex/flarestore')
 
 class User extends FlareStore {
     table = 'users'; // define the name of table
-    fields = ['name', 'address']; // fillable field list
+
+    // fillable field list
+    fields = {
+        'name': 'string',
+        'address': '3-gram'
+    };
 
 }
 
@@ -128,7 +133,12 @@ var FlareStore = require('@acetex/flarestore')
 
 class User extends FlareStore {
     table = 'users'; // define the name of table
-    fields = ['name', 'address']; // fillable field list
+    
+    // fillable field list
+    fields = {
+        'name': 'string',
+        'address': '3-gram'
+    };
 
     post(){
         return this.hasMany('models/Post', 'users_id', '__id');
@@ -147,6 +157,12 @@ var FlareStore = require('@acetex/flarestore')
 class Post extends FlareStore {
     table = 'posts'; // define the name of table
     fields = ['title', 'description', 'uses_id'];
+
+    fields = {
+        'title': '3-gram'',
+        'description': '4-gram', // can use 2-gram, 3-gram, 4-gram ... n-gram
+        'uses_id': 'string' //assume this key reference to 'user.__id' and the 'user.__id' auto generate to string data type by default.
+    };
 
     user(){
         this.belongTo('models/User');

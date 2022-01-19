@@ -1,5 +1,6 @@
 const ROrm = require('./RecordOrm.js');
 const BaseFireStore = require('./BaseFireStore.js');
+const nGram = require('./N-Gram');
 
 class FlareStore {
     #where = [];
@@ -12,9 +13,9 @@ class FlareStore {
         const fireStore = new BaseFireStore(this.table);
         
         const paramsCreate = {};
-        this.fields.forEach(field => {
-            paramsCreate[field] =  params[field];
-        });
+        for (let property in this.fields) {
+            paramsCreate[property] =  params[property];
+        }
         
         let newDocRef = fireStore.activeTable.doc();
         let tiemStamp = new Date().getTime();

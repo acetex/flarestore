@@ -16,7 +16,7 @@ class RecordOrm {
 
         let relationData = this.#getModelClass(relationModel);
 
-        if(!relationData.fields.includes(foreignKey)){
+        if(!relationData.fields.hasOwnProperty(foreignKey)){
             throw (`No property key '${foreignKey}' in '${relationData.table}' model.`);
         }
     
@@ -36,7 +36,7 @@ class RecordOrm {
             throw (`No property key '${ownerKey}' in '${this.#modelObject.table}' model.`);
         }
 
-        if(!relationData.fields.includes(relateKey) && relateKey != '__id'){
+        if(!relationData.fields.hasOwnProperty(relateKey) && relateKey != '__id'){
             throw (`No property key '${relateKey}' in '${relationData.table}' model.`);
         }
         
@@ -88,9 +88,10 @@ class RecordOrm {
         this.#activeTable = activeTable;
         this.#original = records;
 
-        for (let field in records) {
-            let value = records[field];
-            this[field] = value;
+        this['__id'] = records['__id'];
+        this['__timestamp'] = records['__timestamp'];
+        for (let property in modelObject.fields) {
+            this[property] = records[property];
         }
         
         return this;
@@ -99,11 +100,11 @@ class RecordOrm {
     async save() {
         try{
             const params = {};
-            this.#modelObject.fields.forEach(field => {
-                if(this[field] != this.#original[field]){
-                    params[field] =  this[field];
+            for (let property in this.#modelObject.fields) {
+                if(this[property] != this.#original[property]){
+                    params[property] =  this[property];
                 }
-            });
+            }
             
             if(Object.keys(params).length){
                 const updated = await this.#activeTable.doc(this.__id).update(params);

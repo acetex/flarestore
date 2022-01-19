@@ -1,6 +1,6 @@
 {
   "name": "@acetex/flarestore",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "Firestore ORM for node.js, inspired by laravel eloquent.",
   "main": "./src/FlareStore.js",
   "homepage": "https://github.com/acetex/flarestore",

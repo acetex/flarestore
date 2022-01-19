@@ -159,7 +159,7 @@ class Post extends FlareStore {
     fields = ['title', 'description', 'uses_id'];
 
     fields = {
-        'title': '3-gram'',
+        'title': '3-gram',
         'description': '4-gram', // can use 2-gram, 3-gram, 4-gram ... n-gram
         'uses_id': 'string' //assume this key reference to 'user.__id' and the 'user.__id' auto generate to string data type by default.
     };

@@ -8,13 +8,29 @@ class FlareStore {
     #orderBy = [];
     #limit = null;
     #descFlag = '[-]';
+    fullTextSearchFieldPrefix = '__fs-ngram-';
 
     async create(params){
         const fireStore = new BaseFireStore(this.table);
         
         const paramsCreate = {};
         for (let property in this.fields) {
-            paramsCreate[property] =  params[property];
+            let fieldObj = this.fields[property];
+
+            if(fieldObj.includes('-gram')){
+                let position = fieldObj.indexOf('-gram');
+                let ngram = parseInt(fieldObj.substring(position-1, position));
+
+                let mapCreate = {};
+                let gram = nGram(ngram)(params[property].replace(/ /g,'').toLowerCase());
+                gram.forEach(function(g){
+                    mapCreate[''+g] = true;
+                });
+                
+                paramsCreate[this.fullTextSearchFieldPrefix+property] = mapCreate;
+            }
+
+            paramsCreate[property] = params[property];
         }
         
         let newDocRef = fireStore.activeTable.doc();
@@ -98,8 +114,11 @@ class FlareStore {
             if(this.#limit != null){
                 Collection = Collection.limit(this.#limit);
             }
-
-            docs = await Collection.get();
+            
+            let query = await Collection.get();
+            query.forEach(doc => {
+                docs.push(doc);
+            });
         }
         
         let record;
@@ -114,7 +133,7 @@ class FlareStore {
                 break;
             }
         };
-
+        
         if(this.#orderBy.length == 0 && unionSet > 1){
             orm.sort(this.#dynamicSortMultiple(['__timestamp']));
         }else{
@@ -150,7 +169,30 @@ class FlareStore {
             var [field, operation, value] = aggs;
         }
 
-        this.#where.push([field, operation, value]);
+        if(operation.toLowerCase() == 'like'){
+            if(this.fields[field].includes('-gram')){
+                let position = this.fields[field].indexOf('-gram');
+                let ngram = this.fields[field].substring(position-1, position);
+
+                field = this.fullTextSearchFieldPrefix+field;
+                operation = '=';
+                var regex = new RegExp('.{1,'+ngram+'}', 'g');
+                value = value.toLowerCase();
+                value = value.match(regex);
+
+                let obj = this;
+                value.forEach(function(v){
+                    if ( v.length == parseInt(ngram) || value.length == 1 ) {
+                        obj.#where.push([field+'.'+v, operation, true]);
+                    }
+                });
+                
+            }else{
+                throw "can use 'like' query only nGram field type";
+            }
+        }else{
+            this.#where.push([field, operation, value]);
+        }
 
         return this;
     }
@@ -163,7 +205,30 @@ class FlareStore {
             var [field, operation, value] = aggs;
         }
 
-        this.#orWhere.push([field, operation, value]);
+        if(operation.toLowerCase() == 'like'){
+            if(this.fields[field].includes('-gram')){
+                let position = this.fields[field].indexOf('-gram');
+                let ngram = this.fields[field].substring(position-1, position);
+
+                field = this.fullTextSearchFieldPrefix+field;
+                operation = '=';
+                var regex = new RegExp('.{1,'+ngram+'}', 'g');
+                value = value.toLowerCase();
+                value = value.match(regex);
+
+                let obj = this;
+                value.forEach(function(v){
+                    if ( v.length == parseInt(ngram) || value.length == 1 ) {
+                        obj.#orWhere.push([field+'.'+v, operation, true]);
+                    }
+                });
+
+            }else{
+                throw "can use 'like' query only nGram field type";
+            }
+        }else{
+            this.#orWhere.push([field, operation, value]);
+        }
 
         return this;
     }

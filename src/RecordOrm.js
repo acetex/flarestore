@@ -103,8 +103,23 @@ class RecordOrm {
             for (let property in this.#modelObject.fields) {
                 if(this[property] != this.#original[property]){
                     params[property] =  this[property];
+
+                    let fieldObj = this.#modelObject.fields[property];
+                    if(fieldObj.includes('-gram')){
+                        let position = fieldObj.indexOf('-gram');
+                        let ngram = parseInt(fieldObj.substring(position-1, position));
+
+                        let mapCreate = {};
+                        let gram = nGram(ngram)(params[property].replace(/ /g,'').toLowerCase());
+                        gram.forEach(function(g){
+                            mapCreate[''+g] = true;
+                        });
+                        
+                        params[this.#modelObject.fullTextSearchFieldPrefix+property] = mapCreate;
+                    }
                 }
             }
+            
             
             if(Object.keys(params).length){
                 const updated = await this.#activeTable.doc(this.__id).update(params);

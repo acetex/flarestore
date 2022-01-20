@@ -12,7 +12,7 @@ and sorry about my english.
 2. This package not support firestore sub collection at all. the concept of this library your must imagine to `RDB (Relational Data Base` it just `DB->TABLE->COLUMN` schema and `Relational` data with `foreign key`, yes no need sub collection for `RDB`.
 3. This Package not require a `composite or single field index`  when your use `orderBY()` to sort your query, because the library use your nodejs server to do this.
 4. Currently version not support difining `field type`, you can workaround to edit field type manualy on gcp firestore page.
-5. Currently version also not support `LIKE %%` query same base firestore query api, but in the nearly next version of this package i try to support `full text search` with `term`, `bigram` and `trigram`, you just config field type with `term`, `bigram` or `trigram` type to use this feature.
+5. Right now support `LIKE` for `where()` only, for `orwhere()` please wait to update next version.
 6. Support `==`, `>`, `<`, `>=`, `<=`, `!=`, `array-contains`, `array-contains-any`, `in`, `not-in` on `where()` operator same of gcp firestore.
 7. Currently version suport only `limit()` not support `startAt()`, `endAt()`.
 8. Currently version not support realtime snapshot but you can workaround to get model instant property `.activeTable` it will return `instant of firestore target collection` then you can follow to use firestore official nude.js api sdk like realtime snapshot or other default official api.
@@ -57,8 +57,8 @@ class User extends FlareStore {
 
     // fillable field list
     fields = {
-        'name': 'string',
-        'address': '3-gram'
+        'name': 'any', // any use for ignore validate data type for the future version
+        'address': '5-gram' // use n-gram field type if you want to grant "Full Text Search" for this field, the perfix number tell the library split keyword with n digit, the small prefix number grant user countless typing frequency to get search result but bad system performance coz it make document size to large and using search time result more than higher prefix number. yes... becreaful to use n-gram number keep high prefix number as posible for performance.
     };
 
 }
@@ -76,7 +76,7 @@ async function createUser(){
     const user = new User;
     const params = {
         name: 'firstname lastname',
-        address: 'customer address'
+        address: 'example to use n-gram data type for Full Text Search'
     };
 
     await user.create(params); // when you create a new data record, the '__id' and '__timestamp' is automatic generated.
@@ -101,6 +101,24 @@ async function getUser(){
     let users = await user.get();
     users[0].name = 'firstname lastname changed!';
     users[0].save();
+}
+
+getUser();
+
+```
+
+Search `like` operator with `FULL TEXT SEARCH` this ability only use when the field type set to `n-gram` eg. `2-gram`, `3-gram` ...
+this version support `where()` only, for `orWhere()` wait next update version.
+```
+# /index.js
+var User = require('./models/User.js');
+
+async function getUser(){
+    const user = new User;
+
+    user.where('address', 'like', 'n-gram data type for Full Text search'); // no need type % block
+    console.log(await user.get());
+
 }
 
 getUser();
@@ -137,7 +155,7 @@ class User extends FlareStore {
     // fillable field list
     fields = {
         'name': 'string',
-        'address': '3-gram'
+        'address': '5-gram'
     };
 
     post(){
